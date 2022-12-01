@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  coordinator:
+    build: coordinator
+    networks:
+      - control
+    cap_add:
+      - NET_ADMIN
+    # We could control host's docker daemon from inside the container
+    #  but we don't need to do that
+    # volumes:
+    #  - /var/run/docker.sock:/var/run/docker.sock
+  runner:
+    build: runner
+    deploy:
+      replicas: 2
+    networks:
+      - control
+      - data
+    cap_add:
+      - NET_ADMIN
+    depends_on:
+      - coordinator
+
+networks:
+  control:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "control"
+  data:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "data"
