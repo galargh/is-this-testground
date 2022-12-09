@@ -60,3 +60,29 @@ The runner covers the following responsibilities:
 ## Next steps
 
 There's no next steps. This is just an excercise to understand what minimal Testground could be and how it could split responsibilities and abstractions.
+
+# Actual Testground
+
+## Breakdown by function
+
+| function | component | description | required | complexity | alternatives | value |
+| --- | --- | --- | --- | --- | --- | --- |
+| building | daemon | building test nodes | optional | complex because of the need to support multiple languages and runtimes (builders) | `docker build`, `go build` | ? |
+| orchestration | daemon | starting and stopping test nodes | optional | complex because of the need to support multiple environemnts (runners) | `docker compose`, `nomad`, `kubernetes` | ? |
+| network setup | daemon | creating networks over which test nodes communicate | optional | only applicable to a subset of environments | `docker network`, `cni` | ? |
+| synchronisation | sync | facilitating communication between test nodes | essential | ? | this is what makes a test run in a distributed environment |
+| network configuration | sidecar | modifying network characteristics | essential | complex because of the need to support multiple environments (runners) | `tc`, `iptables` | an abstraction that differentiates testground |
+| collection | daemon | collecting test results (from the sync) | essential | ? | restults reporting is a pretty important part of testing framework |
+| metrics | sync | collecting test node application, runtime metrics | nice to have | `prometheus` | makes performance tests possible |
+| logging | daemon | collecting test node application logs | optional | `docker logs`, `fluentd` | makes debugging tests easier |
+
+## Breakdown by component
+
+| component | function |
+| --- |
+| cli | init, wait |
+| daemon | building, orchestration, network setup, collection |
+| sync | synchronisation, metrics |
+| sidecar | network configuration |
+| test node | test logic |
+| sdk | glue |
