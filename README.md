@@ -79,7 +79,7 @@ There's no next steps. This is just an excercise to understand what minimal Test
 ## Breakdown by component
 
 | component | function |
-| --- |
+| --- | --- |
 | cli | init, wait |
 | daemon | building, orchestration, network setup, collection |
 | sync | synchronisation, metrics |
