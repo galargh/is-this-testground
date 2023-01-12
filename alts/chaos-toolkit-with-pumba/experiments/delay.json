@@ -1,0 +1,46 @@
+{
+  "title": "Does increasing network delay disconnect Kubo peers?",
+  "description": "Increased delay shouldn't affect connection between Kubo peers.",
+  "configuration": {
+    "pwd": {
+      "type": "env",
+      "key": "PWD"
+    }
+  },
+  "steady-state-hypothesis": {
+    "title": "Kubo peers are connected to each other",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "kubo-must-be-running",
+        "tolerance": 0,
+        "provider": {
+          "type": "process",
+          "path": "bash",
+          "arguments": "${pwd}/bin/verify-running-container-count.sh chaos-toolkit-with-pumba-ipfs- 2"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "kubo-nodes-must-be-connected",
+        "tolerance": 0,
+        "provider": {
+          "type": "process",
+          "path": "bash",
+          "arguments": "${pwd}/bin/verify-connectivity-between-peers.sh"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "action",
+      "name": "add-delay",
+      "provider": {
+        "type": "process",
+        "path": "bash",
+        "arguments": "${pwd}/bin/pumba netem --tc-image gaiadocker/iproute2 --duration 1m delay --time 1000 chaos-toolkit-with-pumba-ipfs-"
+      }
+    }
+  ]
+}
